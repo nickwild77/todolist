@@ -1,38 +1,158 @@
 import React from "react";
-import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 import UserList from './components/User.js';
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
+import {HashRouter, Redirect, Route, Switch} from "react-router-dom";
+import ToDosList from "./components/ToDos";
+import ProjectsList, {ProjectDetail} from "./components/Projects";
 
+const apiUrl = 'http://127.0.0.1:8000/api/';
+
+const page404 = ({path}) => {
+    return (
+        <h1>Page '{path.pathname}' not found</h1>
+    )
+}
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            'users': [],
+            previousUsersUrl: null,
+            nextUsersUrl: null,
+            usersList: [],
+            previousProjectsUrl: null,
+            nextProjectsUrl: null,
+            projectsList: [],
+            previousToDosUrl: null,
+            nextToDosUrl: null,
+            toDoList: [],
         };
     }
 
-    componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/users/')
-            .then(response => {
-                const users = response.data
+    loadUsers(url) {
+        fetch(`${url}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then((response) => {
+                return response.json();
+            })
+            .then((request) => {
+                const users = request.results;
+                const previous = request.previous;
+                const next = request.next;
                 this.setState(
                     {
-                        'users': users,
+                        previousUsersUrl: previous,
+                        nextUsersUrl: next,
+                        UserList: users,
                     }
                 );
-            }).catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
+    };
+
+    loadToDo(url) {
+        fetch(`${url}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then((response) => {
+                return response.json();
+            })
+            .then((request) => {
+                const toDos = request.results;
+                const previous = request.previous;
+                const next = request.next;
+                this.setState(
+                    {
+                        previousToDosUrl: previous,
+                        nextToDosUrl: next,
+                        toDoList: toDos,
+                    }
+                );
+            })
+            .catch(error => console.log(error));
+    };
+
+    loadProjects(url) {
+        fetch(`${url}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then((response) => {
+                return response.json();
+            })
+            .then((request) => {
+                const projectsList = request.results;
+                const previous = request.previous;
+                const next = request.next;
+                this.setState(
+                    {
+                        previousProjectsUrl: previous,
+                        nextProjectsUrl: next,
+                        projectsList: projectsList,
+                    }
+                );
+            })
+            .catch(error => console.log(error));
+    };
+
+    componentDidMount() {
+        this.loadUsers(`${apiUrl}users/`);
+        this.loadToDo(`${apiUrl}todo/`);
+        this.loadProjects(`${apiUrl}projects/`);
     }
 
     render() {
         return (
-            <div>
-                <Menu/>
-                <UserList users={this.state.users}/>
-                <Footer/>
+            <div className={'App'}>
+                <HashRouter>
+                    <Menu/>
+                    <Switch>
+                        <Route exact path={'/'}>
+                            <UserList users={this.state.users}
+                                      nextPage={this.state.nextUsersUrl}
+                                      previousPage={this.state.previousUsersUrl}
+                                      load={this.loadUsers.bind(this)}
+                            />
+                        </Route>
+                        <Route exact path={'/todos/'}>
+                            <ToDosList toDosList={this.state.toDoList}
+                                       nextPage={this.state.nextToDosUrl}
+                                       previousPage={this.state.previousToDosUrl}
+                                       load={this.loadToDo.bind(this)}
+                            />
+                        </Route>
+                        <Route exact path={'/projects/'}>
+                            <ProjectsList projectsList={this.state.projectsList}
+                                          nextPage={this.state.nextProjectsUrl}
+                                          previousPage={this.state.previousProjectsUrl}
+                                          load={this.loadProjects.bind(this)}
+                            />
+                        </Route>
+                        <Route exact path={'/projects/:id/'}>
+                            <ProjectDetail projectsList={this.state.projectsList}/>
+                        </Route>
+                        <Redirect from={'/users/'} to={'/'}/>
+                        <Route component={page404}/>
+                    </Switch>
+                    <Footer/>
+                </HashRouter>
             </div>
         );
     }
