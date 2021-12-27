@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Project(models.Model):
     name = models.CharField(_('Нзвание проекта'), max_length=128)
-    url = models.URLField(_('Ссылка на репозиторий'), blank=True)
+    repository_link = models.URLField(_('Ссылка на репозиторий'), blank=True)
     user = models.ManyToManyField(get_user_model(), _('Пользователи'))
 
     def __str__(self):
@@ -24,6 +24,9 @@ class ToDo(models.Model):
     is_active = models.BooleanField(_('Активна'), default=True)
     created = models.DateField(_('Создана'), auto_now_add=True)
     updated = models.DateField(_('Обновлена'), auto_now=True)
+
+    def __str__(self):
+        return f'{self.title}'
 
     class Meta:
         verbose_name = _('Задача')
