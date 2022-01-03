@@ -23,7 +23,7 @@ const UserItem = ({user}) => {
     );
 };
 
-const UserList = ({users, previousPage, nextPage, load}) => {
+const UsersList = ({users, previousPage, nextPage, load}) => {
     return (
         <div>
             <p>
@@ -59,4 +59,4 @@ const UserList = ({users, previousPage, nextPage, load}) => {
 };
 
 
-export default UserList;
+export default UsersList;
