@@ -5,6 +5,9 @@ const UserItem = ({user}) => {
     return (
         <tr>
             <td>
+                {user.id}
+            </td>
+            <td>
                 {user.username}
             </td>
             <td>
@@ -20,23 +23,38 @@ const UserItem = ({user}) => {
     );
 };
 
-const UserList = ({users}) => {
+const UserList = ({users, previousPage, nextPage, load}) => {
     return (
-        <table>
-            <th>
-                Username
-            </th>
-            <th>
-                First name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            {users.map((user) => <UserItem user={user}/>)}
-        </table>
+        <div>
+            <p>
+                {previousPage && <button onClick={() => load(previousPage)}>previous page</button>}
+                {nextPage && <button onClick={() => load(nextPage)}>next page</button>}
+            </p>
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        First name
+                    </th>
+                    <th>
+                        Last Name
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {users.map((user) => <UserItem key={user.id} user={user}/>)}
+                </tbody>
+            </table>
+        </div>
     );
 };
 
