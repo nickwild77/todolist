@@ -4,7 +4,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.viewsets import GenericViewSet
 
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserSerializerVersionTwo
 
 
 class CustomUserModelViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin,
@@ -13,3 +13,8 @@ class CustomUserModelViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixi
     serializer_class = UserSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.version == '2.0':
+            return UserSerializerVersionTwo
+        return UserSerializer
