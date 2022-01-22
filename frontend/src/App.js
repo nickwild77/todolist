@@ -21,7 +21,7 @@ class App extends React.Component {
         this.state = {
             previousUsersUrl: null,
             nextUsersUrl: null,
-            usersList: [],
+            userList: [],
             previousProjectsUrl: null,
             nextProjectsUrl: null,
             projectsList: [],
@@ -51,7 +51,7 @@ class App extends React.Component {
                     {
                         previousUsersUrl: previous,
                         nextUsersUrl: next,
-                        UserList: users,
+                        userList: users,
                     }
                 );
             })
@@ -125,7 +125,7 @@ class App extends React.Component {
                     <Menu/>
                     <Switch>
                         <Route exact path={'/'}>
-                            <UserList users={this.state.users}
+                            <UserList users={this.state.userList}
                                       nextPage={this.state.nextUsersUrl}
                                       previousPage={this.state.previousUsersUrl}
                                       load={this.loadUsers.bind(this)}

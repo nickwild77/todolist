@@ -11,10 +11,10 @@ const UserItem = ({user}) => {
                 {user.username}
             </td>
             <td>
-                {user.first_name}
+                {user.firstName}
             </td>
             <td>
-                {user.last_name}
+                {user.lastName}
             </td>
             <td>
                 {user.email}
@@ -23,7 +23,7 @@ const UserItem = ({user}) => {
     );
 };
 
-const UserList = ({users, previousPage, nextPage, load}) => {
+const UsersList = ({users, previousPage, nextPage, load}) => {
     return (
         <div>
             <p>
@@ -59,4 +59,4 @@ const UserList = ({users, previousPage, nextPage, load}) => {
 };
 
 
-export default UserList;
+export default UsersList;
