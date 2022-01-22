@@ -36,16 +36,16 @@ const ToDosList = ({toDosList, previousPage, nextPage, load}) => {
                         ID
                     </th>
                     <th>
-                        Creator
+                        Создатель
                     </th>
                     <th>
-                        Project
+                        Проект
                     </th>
                     <th>
-                        Title
+                        Задача
                     </th>
                     <th>
-                        Text
+                        Содержание
                     </th>
                 </tr>
                 </thead>

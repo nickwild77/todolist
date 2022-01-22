@@ -5,9 +5,6 @@ const UserItem = ({user}) => {
     return (
         <tr>
             <td>
-                {user.id}
-            </td>
-            <td>
                 {user.username}
             </td>
             <td>
@@ -34,16 +31,13 @@ const UsersList = ({users, previousPage, nextPage, load}) => {
                 <thead>
                 <tr>
                     <th>
-                        ID
+                        Пользователь
                     </th>
                     <th>
-                        Username
+                        Имя
                     </th>
                     <th>
-                        First name
-                    </th>
-                    <th>
-                        Last Name
+                        Фамилия
                     </th>
                     <th>
                         Email

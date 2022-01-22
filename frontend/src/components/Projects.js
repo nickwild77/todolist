@@ -63,7 +63,7 @@ const ProjectsList = ({projectsList, previousPage, nextPage, load}) => {
                         ID
                     </th>
                     <th>
-                        Name
+                        Проект
                     </th>
                 </tr>
                 </thead>
