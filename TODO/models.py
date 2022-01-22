@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class Project(models.Model):
     name = models.CharField(_('Нзвание проекта'), max_length=128)
     repository_link = models.URLField(_('Ссылка на репозиторий'), blank=True)
-    user = models.ManyToManyField(get_user_model(), _('Пользователи'))
+    user = models.ManyToManyField(get_user_model(), _('User'))
 
     def __str__(self):
         return f'{self.name}'
