@@ -1,37 +1,32 @@
-import React from "react";
-import {HashRouter, BrowserRouter, Route, Routes, Link, Navigate, useLocation} from 'react-router-dom'
-import axios from "axios";
-import './App.css';
+import React from "react"
+import {BrowserRouter, Route, Routes, Link, Navigate} from "react-router-dom";
+import UsersList from "./components/UsersList.js";
+import Footer from "./components/footer";
+import TodoList from "./components/TodoList";
+import ProjectList from "./components/ProjectsList";
+import ProjectDetails from "./components/ProjectDetail";
+import LoginForm from "./components/LoginForm"
+import {Box, Row, Column, Container} from "./components/header.js";
+import axios from "axios"
+import ProjectForm from "./components/ProjectForm";
+import TodoForm from "./components/TodoForm";
 
-import UserList from "./components/User";
-import LoginForm from "./components/LoginForm";
-import ToDosList from "./components/ToDos";
-import ProjectsList, {ProjectDetail} from "./components/Projects";
 
-const apiUrl = 'http://127.0.0.1:8000/api/';
-
-const NotFound = () => {
-    const location = useLocation()
+const NotFound = ({}) => {
     return (
-        <div>Page {location.pathname} not found</div>
+        <div>Page not found</div>
     )
-};
+}
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(prop) {
+        super(prop)
         this.state = {
-            previousUsersUrl: null,
-            nextUsersUrl: null,
-            userList: [],
-            previousProjectsUrl: null,
-            nextProjectsUrl: null,
-            projectsList: [],
-            previousToDosUrl: null,
-            nextToDosUrl: null,
-            toDoList: [],
+            'users': [],
+            'projects': [],
+            'todo': [],
             'token': '',
-        };
+        }
     }
 
     get_token(login, password) {
@@ -52,132 +47,167 @@ class App extends React.Component {
         localStorage.setItem('token', '')
         this.setState({
             'token': ''
-        })
+        }, this.get_data)
+    }
+
+    componentDidMount() {
+        let token = localStorage.getItem('token')
+        this.setState({
+            'token': token
+        }, this.get_data)
     }
 
     is_auth() {
         return !!this.state.token
     }
 
-    loadUsers(url) {
-        fetch(`${url}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            })
-            .then((response) => {
-                return response.json();
-            })
-            .then((request) => {
-                const users = request.results;
-                const previous = request.previous;
-                const next = request.next;
-                this.setState(
-                    {
-                        previousUsersUrl: previous,
-                        nextUsersUrl: next,
-                        userList: users,
-                    }
-                );
-            })
-            .catch(error => console.log(error));
-    };
+    get_headers() {
+        if (this.is_auth()) {
+            return {
+                'Authorization': 'Token ' + this.state.token
+            }
+        }
+        return {}
+    }
 
-    loadToDo(url) {
-        fetch(`${url}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
+    get_data() {
+        let headers = this.get_headers()
+        axios
+            .get('http://127.0.0.1:8000/api/users/', {headers})
+            .then(response => {
+                const users = response.data.results
+                this.setState({
+                    'users': users
+                })
             })
-            .then((response) => {
-                return response.json();
+            .catch(error => {
+                console.log(error);
+                this.setState({
+                    'users': []
+                })
             })
-            .then((request) => {
-                const toDos = request.results;
-                const previous = request.previous;
-                const next = request.next;
-                this.setState(
-                    {
-                        previousToDosUrl: previous,
-                        nextToDosUrl: next,
-                        toDoList: toDos,
-                    }
-                );
-            }).catch(error => console.log(error));
-    };
 
+        axios
+            .get('http://127.0.0.1:8000/api/projects/', {headers})
+            .then(response => {
+                const projects = response.data.results
+                this.setState({
+                    'projects': projects
+                })
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState({
+                    'projects': []
+                })
+            })
 
-    loadProjects(url) {
-        fetch(`${url}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
+        axios
+            .get('http://127.0.0.1:8000/api/todo/', {headers})
+            .then(response => {
+                const todo = response.data.results
+                this.setState({
+                    'todo': todo
+                })
             })
-            .then((response) => {
-                return response.json();
+            .catch(error => {
+                console.log(error);
+                this.setState({
+                    'todo': []
+                })
             })
-            .then((request) => {
-                const projectsList = request.results;
-                const previous = request.previous;
-                const next = request.next;
-                this.setState(
-                    {
-                        previousProjectsUrl: previous,
-                        nextProjectsUrl: next,
-                        projectsList: projectsList,
-                    }
-                );
-            })
-            .catch(error => console.log(error));
-    };
 
-    componentDidMount() {
-        const token = localStorage.getItem('token')
-        this.loadUsers(`${apiUrl}users/`);
-        this.loadToDo(`${apiUrl}todo/`);
-        this.loadProjects(`${apiUrl}projects/`);
-        this.setState({
-            'token': token
-        })
+    }
+
+    deleteTodo(id) {
+        const headers = this.get_headers()
+        axios
+            .delete(`https://127.0.0.1:8000/api/todo/${id}`, {headers})
+            .then(response => {
+                this.setState({todo: this.state.kanbans.filter((item) => item.id !== id)})
+            })
+            .catch(error => console.log(error))
+    }
+
+    deleteProject(id) {
+        const headers = this.get_headers()
+        axios
+            .delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers})
+            .then(response => {
+                this.setState({projects: this.state.projects.filter((item) => item.id !== id)})
+            })
+            .catch(error => console.log(error))
+    }
+
+    createTodo(text, project, user) {
+        const headers = this.get_headers()
+        const data = {text: text, project: project, user: user}
+        axios.post(`http://127.0.0.1:8000/api/todo/`, data, {headers})
+            .then(response => {
+                let add_todo = response.data.results
+                const project = this.state.projects.filter((item) => item.id === add_todo.project)[0]
+                const user = this.state.users.filter((item) => item.id === add_todo.user)[0]
+                add_todo.project = project
+                add_todo.user = user
+                this.setState({kanbans: [...this.state.todo, add_todo]})
+            }).catch(error => console.log(error))
+    }
+
+    createProject(name) {
+        const headers = this.get_headers()
+        const data = {name: name}
+        axios.post(`http://127.0.0.1:8000/api/projects/`, data, {headers})
+            .then(response => {
+                let add_project = response.data.results
+                this.setState({projects: [...this.state.projects, add_project]})
+            }).catch(error => console.log(error))
     }
 
     render() {
         return (
             <div>
-                <HashRouter>
+                <BrowserRouter>
                     <nav>
-                        <ul>
-                            <li><Link to="/">Пользователи</Link></li>
-                            <li><Link to="/projects">Проекты</Link></li>
-                            <li><Link to="/todos">Задачи</Link></li>
-                            <li>
-                                {this.is_auth() ? <button onClick={() => this.logout()}> Выйти </button> :
-                                    <Link to="/login">Войти</Link>}
-                            </li>
-                        </ul>
+                        <Box>
+                            <Container>
+                                <Row>
+                                    <Column>
+                                        <Link to="/">Пользователи</Link>
+                                    </Column>
+                                    <Column>
+                                        <Link to="/projects">Проекты</Link>
+                                    </Column>
+                                    <Column>
+                                        <Link to="/todo">Список заданий</Link>
+                                    </Column>
+                                    <Column>
+                                        {this.is_auth() ? <button onClick={() => this.logout()}> Выйти </button> :
+                                            <Link to="/login">Войти</Link>}
+                                    </Column>
+                                </Row>
+                            </Container>
+                        </Box>
                     </nav>
                     <Routes>
-                        <Route exact path='/' element={<UserList users={this.state.userList}/>}/>
-                        <Route exact path='/projects' element={<ProjectsList projectsList={this.state.projectsList}/>}/>
-                        <Route exact path='/todos' element={<ToDosList toDosList={this.state.toDoList}/>}/>
+                        <Route exact path='/' element={<UsersList users={this.state.users}/>}/>
+                        <Route exact path='/projects' element={<ProjectList projects={this.state.projects}/>}/>
+                        <Route exact path='/todo' element={<TodoList todo={this.state.todo}/>}/>
                         <Route exact path='/login'
-                               element={<LoginForm
-                                   get_token={(login, password) => this.get_token(login, password)}/>}/>
-                        <Route path="/users" element={<Navigate to="/"/>}/>
-                        <Route path='/projects/:id'
-                               element={<ProjectDetail projectsList={this.state.projectsList}/>}/>
+                               element={<LoginForm get_token={(login, password) => this.get_token(login, password)}/>}/>
+                        <Route path='/users' element={<Navigate to="/"/>}/>
+                        <Route path='/projects/:id' element={<ProjectDetails projects={this.state.projects}/>}/>
+                        <Route exact path='/' element={() => <ProjectList projects={this.state.projects}
+                                                                          deleteProject={(id) => this.deleteProject(id)}/>}/>
+                        <Route exact path='/projects/create' element={() => <ProjectForm
+                            createProject={(name, repo_url) => this.createProject(name, repo_url)}/>}/>
+                        <Route exact path='/todos/create' element={() => <TodoForm projects={this.state.projects}
+                                                                                   createTodo={(text, project, user) => this.createTodo(text, project, user)}/>}/>
+                        <Route exact path='/todo' element={() => <TodoList todo={this.state.todo}
+                                                                           deleteTodo={(id) => this.deleteTodo(id)}/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
-                </HashRouter>
+                </BrowserRouter>
+                <Footer/>
             </div>
         )
     }
