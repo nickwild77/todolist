@@ -3,7 +3,11 @@ import React from 'react'
 class ProjectForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {name: '', repository_link: ''}
+        this.state = {
+            name: '',
+            repository_link: '',
+            users: []
+        }
     }
 
     handleChange(event) {
@@ -14,11 +18,31 @@ class ProjectForm extends React.Component {
         );
     }
 
+
+    handleUsersChange(event) {
+        let selectedOptions = event.target.selectedOptions
+        if (selectedOptions) {
+            let users = [];
+            for (let i = 0; i < selectedOptions.length; i++) {
+                users.push(+selectedOptions.item(i).value);
+            }
+
+            this.setState({
+                users: users
+            });
+        }
+    }
+
     handleSubmit(event) {
+        event.preventDefault();
         console.log(this.state.name)
         console.log(this.state.repository_link)
-        this.props.createProject(this.state.name, this.state.repository_link)
-        event.preventDefault()
+        console.log(this.state.users)
+        this.props.createProject(
+            this.state.name,
+            this.state.repository_link,
+            this.state.users)
+
     }
 
     render() {
@@ -30,13 +54,33 @@ class ProjectForm extends React.Component {
                            value={this.state.name} onChange={(event) => this.handleChange(event)}/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="repo_url">repository</label>
-                    <input type="text" className="form-control" name="repo_url"
+                    <label htmlFor="repository_link">repository</label>
+                    <input type="text" className="form-control" name="repository_link"
                            value={this.state.repository_link} onChange={(event) => this.handleChange(event)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="user">user</label>
+                    <select
+                        multiple
+                        required
+                        name="users"
+                        onChange={event => this.handleUsersChange(event)}
+                    >
+                        {this.props.users.map(users => {
+                            if (this.state.users.length > 0 && this.state.users.includes(users.id)) {
+                                return <option selected key={users.id} value={users.id}>
+                                    {`${users.username}`}
+                                </option>
+                            }
+                            return <option key={users.id} value={users.id}>
+                                {`${users.username}`}
+                            </option>
+                        })}
+                    </select>
                 </div>
                 <input type="submit" className="btn btn-primary" value="Save"/>
             </form>
-        );
+        )
     }
 }
 

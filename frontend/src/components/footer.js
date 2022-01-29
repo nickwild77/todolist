@@ -12,13 +12,13 @@ width: 100%;
 const Footer = () => {
     return (
         <Box>
-            <h1 style={{
+            <h5 style={{
                 color: "black",
                 textAlign: "center",
                 marginTop: "15px"
             }}>
                 Все права защищены &copy; 2021
-            </h1>
+            </h5>
         </Box>
     );
 };

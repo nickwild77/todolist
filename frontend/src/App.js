@@ -1,5 +1,5 @@
 import React from "react"
-import {BrowserRouter, Route, Routes, Link, Navigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, Link, Navigate, useLocation} from "react-router-dom";
 import UsersList from "./components/UsersList.js";
 import Footer from "./components/footer";
 import TodoList from "./components/TodoList";
@@ -12,11 +12,12 @@ import ProjectForm from "./components/ProjectForm";
 import TodoForm from "./components/TodoForm";
 
 
-const NotFound = ({}) => {
+const NotFound = () => {
+    const location = useLocation()
     return (
-        <div>Page not found</div>
+        <div>Page {location.pathname} not found</div>
     )
-}
+};
 
 class App extends React.Component {
     constructor(prop) {
@@ -153,12 +154,12 @@ class App extends React.Component {
             }).catch(error => console.log(error))
     }
 
-    createProject(name) {
+    createProject(name, repository_link, user) {
         const headers = this.get_headers()
-        const data = {name: name}
+        const data = {name: name, repository_link: repository_link, user: user}
         axios.post(`http://127.0.0.1:8000/api/projects/`, data, {headers})
             .then(response => {
-                let add_project = response.data.results
+                let add_project = response.data
                 this.setState({projects: [...this.state.projects, add_project]})
             }).catch(error => console.log(error))
     }
@@ -196,14 +197,12 @@ class App extends React.Component {
                                element={<LoginForm get_token={(login, password) => this.get_token(login, password)}/>}/>
                         <Route path='/users' element={<Navigate to="/"/>}/>
                         <Route path='/projects/:id' element={<ProjectDetails projects={this.state.projects}/>}/>
-                        <Route exact path='/' element={() => <ProjectList projects={this.state.projects}
-                                                                          deleteProject={(id) => this.deleteProject(id)}/>}/>
-                        <Route exact path='/projects/create' element={() => <ProjectForm
-                            createProject={(name, repo_url) => this.createProject(name, repo_url)}/>}/>
-                        <Route exact path='/todos/create' element={() => <TodoForm projects={this.state.projects}
-                                                                                   createTodo={(text, project, user) => this.createTodo(text, project, user)}/>}/>
-                        <Route exact path='/todo' element={() => <TodoList todo={this.state.todo}
-                                                                           deleteTodo={(id) => this.deleteTodo(id)}/>}/>
+                        <Route exact path='/projects/create/' element={<ProjectForm users={this.state.users}
+                                                                                   createProject={(name, repository_link, user) => this.createProject(name, repository_link, user)}/>}/>
+                        <Route exact path='/todo/create' element={<TodoForm projects={this.state.projects}
+                                                                            createTodo={(text, project, user) => this.createTodo(text, project, user)}/>}/>
+                        <Route exact path='/todo' element={<TodoList todo={this.state.todo}
+                                                                     deleteTodo={(id) => this.deleteTodo(id)}/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 </BrowserRouter>
