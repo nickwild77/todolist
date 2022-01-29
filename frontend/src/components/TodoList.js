@@ -1,13 +1,17 @@
 import {Link} from "react-router-dom";
 
-const TodoItem = ({todo}) => {
+const TodoItem = ({todo, deleteTodo}) => {
     return (
         <tr>
             <td>{todo.title}</td>
             <td>{todo.body}</td>
             <td>{todo.project}</td>
             <td>{todo.creator}</td>
+            <td>
+                <button onClick={() => deleteTodo(todo.id)} type="button">Delete</button>
+            </td>
         </tr>
+
     )
 }
 
