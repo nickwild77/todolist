@@ -7,6 +7,6 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
 
     class Meta:
-        verbose_name = _('Пользователь')
-        verbose_name_plural = _('Пользователи')
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
         ordering = ['-id']
