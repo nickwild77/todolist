@@ -196,7 +196,8 @@ class App extends React.Component {
                                element={<LoginForm get_token={(login, password) => this.get_token(login, password)}/>}/>
                         <Route exact path='/projects' element={<ProjectList projects={this.state.projects}
                                                                             deleteProject={(id) => this.deleteProject(id)}/>}/>
-                        <Route path='/projects/:id' element={<ProjectDetails projects={this.state.projects}/>}/>
+                        <Route path='/projects/:id' element={<ProjectDetails projects={this.state.projects}
+                                                                             deleteProject={this.deleteProject}/>}/>
                         <Route exact path='/projects/create/' element={<ProjectForm users={this.state.users}
                                                                                     createProject={(name, repository_link, user) => this.createProject(name, repository_link, user)}/>}/>
                         <Route exact path='/todo/create/'

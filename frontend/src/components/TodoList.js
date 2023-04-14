@@ -3,9 +3,9 @@ import {Link} from "react-router-dom";
 const TodoItem = ({todo, deleteTodo}) => {
     return (
         <tr>
+            <td>{todo.project}</td>
             <td>{todo.title}</td>
             <td>{todo.body}</td>
-            <td>{todo.project}</td>
             <td>{todo.creator}</td>
             <td>
                 <button onClick={() => deleteTodo(todo.id)} type="button">Delete</button>
@@ -21,19 +21,21 @@ const TodoList = ({todo, deleteTodo}) => {
         <center>
             <table border="1">
                 <th>
+                    Project
+                </th>
+                <th>
                     Title
                 < /th>
                 <th>
                     Text
                 </th>
                 <th>
-                    Project
-                </th>
-                <th>
                     Creator
                 </th>
                 {todo.map((todo) => <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo}/>)}
-                <Link to="/todo/create">Create</Link>
+                <th>
+                    <Link to="/todo/create">Create</Link>
+                </th>
             </table>
         </center>
 
