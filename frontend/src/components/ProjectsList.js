@@ -30,7 +30,9 @@ const ProjectList = ({projects, deleteProject}) => {
                 </th>
                 {projects.map((project) => <ProjectItem project={project} deleteProject={deleteProject}/>)}
 
-                <Link to='/projects/create'>Create</Link>
+                <th>
+                    <Link to='/projects/create'>Create</Link>
+                </th>
 
             </table>
         </center>

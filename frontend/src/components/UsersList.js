@@ -23,7 +23,7 @@ const UsersList = ({users}) => {
                     Last name
                 </th>
                 <th>
-                    email
+                    Email
                 </th>
                 {users.map((user) => <UserItem user={user}/>)}
             </table>
