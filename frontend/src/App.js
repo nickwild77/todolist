@@ -15,7 +15,9 @@ import TodoForm from "./components/TodoForm";
 const NotFound = () => {
     const location = useLocation()
     return (
-        <div>Page {location.pathname} not found</div>
+        <center>
+            <div>Page {location.pathname} not found</div>
+        </center>
     )
 };
 
